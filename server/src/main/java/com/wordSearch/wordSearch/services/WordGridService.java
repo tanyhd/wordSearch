@@ -29,9 +29,9 @@ public class WordGridService {
         int gridSize = grid.getGridSize();
         char[][] contents = grid.getContents();
         List<Coordinate> coordinates = grid.getCoordinates();
-        Collections.shuffle(coordinates);
 
         for (String word : words) {
+            Collections.shuffle(coordinates);
             word = word.toUpperCase();
             for (Coordinate coordinate : coordinates) {
                 int x = coordinate.getX();
@@ -116,7 +116,8 @@ public class WordGridService {
             case HORIZONTAL:
                 if (coordinate.getY() + wordLength < gridSize) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX()][coordinate.getY() + i] != '_') return false;
+                        char letter = contents[coordinate.getX()][coordinate.getY() + i];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
@@ -124,7 +125,8 @@ public class WordGridService {
             case VERTICAL:
                 if (coordinate.getX() + wordLength < gridSize) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX() + i][coordinate.getY()] != '_') return false;
+                        char letter = contents[coordinate.getX() + i][coordinate.getY()];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
@@ -132,7 +134,8 @@ public class WordGridService {
             case DIAGONAL:
                 if (coordinate.getX() + wordLength < gridSize && coordinate.getY() + word.length() < gridSize) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX() + i][coordinate.getY() + i] != '_') return false;
+                        char letter = contents[coordinate.getX() + i][coordinate.getY() + i];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
@@ -140,7 +143,8 @@ public class WordGridService {
             case HORIZONTAL_INVERSE:
                 if (coordinate.getY() - wordLength >= 0) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX()][coordinate.getY() - i] != '_') return false;
+                        char letter = contents[coordinate.getX()][coordinate.getY() - i];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
@@ -148,7 +152,8 @@ public class WordGridService {
             case VERTICAL_INVERSE:
                 if (coordinate.getX() - wordLength >= 0) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX() - i][coordinate.getY()] != '_') return false;
+                        char letter = contents[coordinate.getX() - i][coordinate.getY()];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
@@ -156,7 +161,8 @@ public class WordGridService {
             case DIAGONAL_INVERSE:
                 if (coordinate.getX() - wordLength >= 0 && coordinate.getY() - wordLength >= 0) {
                     for(int i = 0; i < wordLength; i++) {
-                        if (contents[coordinate.getX() - i][coordinate.getY() - i] != '_') return false;
+                        char letter = contents[coordinate.getX() - i][coordinate.getY() - i];
+                        if (letter != '_' && letter != word.charAt(i)) return false;
                     }
                     return true;
                 }
