@@ -30,6 +30,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.named('bootJar') {
+	launchScript()
+}
+
 jar {
 	manifest {
 		attributes(
