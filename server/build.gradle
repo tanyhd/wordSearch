@@ -37,6 +37,7 @@ tasks.named('bootJar') {
 jar {
 	manifest {
 		attributes(
+				'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
 				'Main-Class': 'com.wordSearch.wordSearch.WordSearchApplication'
 		)
 	}
