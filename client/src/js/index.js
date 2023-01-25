@@ -23,7 +23,7 @@ submitWordBtn.addEventListener("click", async () => {
 });
 
 async function fetchGridInfo(gridSize, words) {
-    let response = await fetch('http://localhost:8080/wordgrid', {
+    let response = await fetch('https://wordsearch-production.up.railway.app/wordgrid', { //local run - 'http://localhost:8080/wordgrid'
         method: 'POST',
         body: JSON.stringify({
             size: gridSize,
