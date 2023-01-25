@@ -1,1 +1,0 @@
-{"mappings":"","sources":["src/app.css"],"sourcesContent":[null],"names":[],"version":3,"file":"index.4a5519d3.css.map","sourceRoot":"/__parcel_source_root/"}
