@@ -1,0 +1,32 @@
+* {
+    font-family: sans-serif; 
+}
+
+.grid-area {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    table {
+        max-width: 700px;
+        margin: auto;
+        user-select: none;
+        td {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            &.selected {
+                background-color: rgba(248, 41, 5, 0.363);
+            }
+        }
+    }
+}
+
+.word-container {
+    margin: auto;
+    div {
+        width: 70px;
+        margin: auto;
+        display: block;
+        text-align: center;
+    }
+
+}
