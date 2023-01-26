@@ -8,9 +8,18 @@
   <link rel="stylesheet" href="app.scss">
 </head>
 <body>
-  <h1>Word Search Game !!!!</h1>
-
+  <h1>Word Search !</h1>
+  <div class="introduction">
+  <p>A word search game is a fun and challenging puzzle game where players have to find a set of words hidden within a grid of letters. </p>
+  <p>To play the game, you first need to enter a list of words, separated by commas, that you will be searching for in the grid. For example, you might enter "car,dog,mouse" as your list of words. </p>
+  <p>Next, you will need to enter the size of the grid that you want to generate. For example, you might enter "15" to generate a 15x15 grid.</p>
+  <p>Once you have entered your list of words and selected the grid size, you can click on the "generate" button to create your word search puzzle.</p>
+  <p>To play the game, you can click and drag your cursor across the grid to spot the words in the grid. Have fun!</p>
+  </div>
+  <label>Enter comma seperated list of words</label>
   <input id="add-word" type="text">
+  <label>Enter grid size</label>
+  <input id="grid-size" type="text">
   <button class="submit-word">Generate Grid</button>
   <section class="grid-area"></section>
   <div class="word-container" id="word-container"></div>

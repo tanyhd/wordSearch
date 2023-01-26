@@ -559,28 +559,24 @@ function hmrAccept(bundle, id) {
 },{}],"ebWYT":[function(require,module,exports) {
 var _gid = require("./gid");
 var _word = require("./word");
-const GRID_SIZE = 20;
-const WORDS = [
-    "ONE",
-    "TWO",
-    "THREE"
-];
 const submitWordBtn = document.querySelector(".submit-word");
-const grid = new (0, _gid.Grid)();
 const words = new (0, _word.Word)();
 submitWordBtn.addEventListener("click", async ()=>{
-    let result = await fetchGridInfo(GRID_SIZE, WORDS);
+    const grid = new (0, _gid.Grid)();
+    const commaSeperatedWords = document.querySelector("#add-word").value;
+    const wordList = commaSeperatedWords.split(",");
+    const gridSize = document.querySelector("#grid-size").value;
+    let result = await fetchGridInfo(gridSize, wordList);
     let wordInPuzzle = result.wordInPuzzle;
     let contentsArray = result.contents.map((content)=>content.split(""));
-    grid.renderGrid(GRID_SIZE, contentsArray);
-    words.displayWord(wordInPuzzle);
-    //let flattenContentsArray = contentsArray.flat();
-    //let contentsString = contentsArray.map(row => row.join(' ')).join('\n');
+    grid.words = wordInPuzzle;
+    grid.renderGrid(gridSize, contentsArray, wordInPuzzle);
+    //words.displayWord(wordInPuzzle);
     console.log("Words In Puzzle: ", wordInPuzzle);
     console.log("Contents Array: ", contentsArray);
 });
 async function fetchGridInfo(gridSize, words) {
-    let response = await fetch("http://localhost:8080/wordgrid", {
+    let response = await fetch("https://wordsearch-production.up.railway.app/wordgrid", {
         method: "POST",
         body: JSON.stringify({
             size: gridSize,
@@ -598,28 +594,35 @@ async function fetchGridInfo(gridSize, words) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Grid", ()=>Grid);
+var _word = require("./word");
 class Grid {
     constructor(){
         this.wordSelectMode = false;
         this.selectedItems = [];
         this.firstSelectedItem;
         this.gridArea = null;
+        this.words = [];
+        this.foundWords = [];
+        this.wordsInPuzzle = [];
     }
     getCellsInRange(firstLetter, currentLetter) {
         let cellsInRange = [];
-        if (firstLetter.y === currentLetter.y) {
-            if (firstLetter.x > currentLetter.x) [currentLetter, firstLetter] = [
-                firstLetter,
-                currentLetter
-            ];
-            for(let i = firstLetter.x; i <= currentLetter.x; i++){
-                console.log(this.gridArea.querySelector(`td[data-x="${i}"][data-y="${currentLetter.y}"]`));
-                cellsInRange.push(this.gridArea.querySelector(`td[data-x="${i}"][data-y="${currentLetter.y}"]`));
-            }
+        if (firstLetter.x > currentLetter.x || firstLetter.y > currentLetter.y) [currentLetter, firstLetter] = [
+            firstLetter,
+            currentLetter
+        ];
+        if (firstLetter.y === currentLetter.y) for(let i = firstLetter.x; i <= currentLetter.x; i++)cellsInRange.push(this.gridArea.querySelector(`td[data-x="${i}"][data-y="${currentLetter.y}"]`));
+        else if (firstLetter.x === currentLetter.x) for(let i = firstLetter.y; i <= currentLetter.y; i++)cellsInRange.push(this.gridArea.querySelector(`td[data-x="${currentLetter.x}"][data-y="${i}"]`));
+        else if (currentLetter.y - firstLetter.y === currentLetter.x - firstLetter.x) {
+            let delta = currentLetter.y - firstLetter.y;
+            for(let i = 0; i <= delta; i++)cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x + i}"][data-y="${firstLetter.y + i}"]`));
         }
         return cellsInRange;
     }
-    renderGrid(gridSize, wordgrid) {
+    renderGrid(gridSize, wordgrid, wordsInPuzzle) {
+        const words = new (0, _word.Word)();
+        this.wordsInPuzzle = wordsInPuzzle;
+        words.displayWord(this.wordsInPuzzle);
         var gridArea = document.getElementsByClassName("grid-area")[0];
         if (gridArea.lastChild) gridArea.removeChild(gridArea.lastChild);
         this.gridArea = gridArea;
@@ -642,7 +645,7 @@ class Grid {
         tbl.appendChild(tblBody);
         gridArea.appendChild(tbl);
         // Click Handlers
-        gridArea.addEventListener("mousedown", (event)=>{
+        tbl.addEventListener("mousedown", (event)=>{
             this.wordSelectMode = true;
             const cell = event.target;
             let x = +cell.getAttribute("data-x");
@@ -655,26 +658,42 @@ class Grid {
                 cell
             };
         });
-        gridArea.addEventListener("mouseup", (event)=>{
+        tbl.addEventListener("mouseup", (event)=>{
             this.wordSelectMode = false;
-            this.selectedItems.forEach((item)=>item.cell.classList.remove("selected"));
+            const selectedWord = this.selectedItems.reduce((word, cell)=>word += cell.getAttribute("data-letter"), "");
+            const reversedSelectedWord = selectedWord.split("").reverse().join("");
+            if (this.words.indexOf(selectedWord) !== -1) this.foundWords.push(selectedWord);
+            else if (this.words.indexOf(reversedSelectedWord) !== -1) this.foundWords.push(reversedSelectedWord);
+            else this.selectedItems.forEach((item)=>item.classList.remove("selected"));
+            this.selectedItems = [];
+            this.wordsInPuzzle = this.wordsInPuzzle.filter((word)=>!this.foundWords.includes(word));
+            console.log("Found words:", this.foundWords);
+            console.log("Words In Puzzle", this.wordsInPuzzle);
+            if (this.wordsInPuzzle.length === 0) {
+                words.displayWord(this.wordsInPuzzle);
+                words.displayWord([
+                    "Congratulation!!!"
+                ]);
+            } else words.displayWord(this.wordsInPuzzle);
         });
-        gridArea.addEventListener("mousemove", (event)=>{
+        tbl.addEventListener("mousemove", (event)=>{
             if (this.wordSelectMode) {
                 const cell = event.target;
                 let x = +cell.getAttribute("data-x");
                 let y = +cell.getAttribute("data-y");
                 let letter = cell.getAttribute("data-letter");
-                this.getCellsInRange(this.firstSelectedItem, {
+                this.selectedItems.forEach((cell)=>cell.classList.remove("selected"));
+                this.selectedItems = this.getCellsInRange(this.firstSelectedItem, {
                     x,
                     y
-                }).forEach((cell)=>cell.classList.add("selected"));
+                });
+                this.selectedItems.forEach((cell)=>cell.classList.add("selected"));
             }
         });
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./word":"7UPUP"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
