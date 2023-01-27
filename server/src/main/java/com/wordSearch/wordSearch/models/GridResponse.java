@@ -15,4 +15,5 @@ public class GridResponse {
 
     private char[][] contents;
     private List<String> wordInPuzzle;
+    private int gridSize;
 }

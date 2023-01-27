@@ -22,6 +22,7 @@ public class WordGridService {
         return GridResponse.builder()
                 .wordInPuzzle(wordInPuzzle)
                 .contents(grid.getContents())
+                .gridSize(size)
                 .build();
     }
 

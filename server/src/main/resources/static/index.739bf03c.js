@@ -560,6 +560,7 @@ function hmrAccept(bundle, id) {
 var _gid = require("./gid");
 var _word = require("./word");
 const submitWordBtn = document.querySelector(".submit-word");
+const submitWordBtnRandom = document.querySelector(".submit-word-Random");
 const words = new (0, _word.Word)();
 submitWordBtn.addEventListener("click", async ()=>{
     const grid = new (0, _gid.Grid)();
@@ -571,17 +572,33 @@ submitWordBtn.addEventListener("click", async ()=>{
     let contentsArray = result.contents.map((content)=>content.split(""));
     grid.words = wordInPuzzle;
     grid.renderGrid(gridSize, contentsArray, wordInPuzzle);
-    //words.displayWord(wordInPuzzle);
-    console.log("Words In Puzzle: ", wordInPuzzle);
-    console.log("Contents Array: ", contentsArray);
+});
+submitWordBtnRandom.addEventListener("click", async ()=>{
+    const grid = new (0, _gid.Grid)();
+    let result = await fetchGridInfoRandom();
+    let wordInPuzzle = result.wordInPuzzle;
+    let gridSize = result.gridSize;
+    let contentsArray = result.contents.map((content)=>content.split(""));
+    grid.words = wordInPuzzle;
+    grid.renderGrid(gridSize, contentsArray, wordInPuzzle);
 });
 async function fetchGridInfo(gridSize, words) {
-    let response = await fetch("https://wordsearch-production.up.railway.app/wordgrid", {
+    let response = await fetch("./wordgrid", {
         method: "POST",
         body: JSON.stringify({
             size: gridSize,
             words: words
         }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    });
+    let result = await response.json();
+    return result;
+}
+async function fetchGridInfoRandom() {
+    let response = await fetch("./wordgrid", {
+        method: "GET",
         headers: {
             "Content-type": "application/json; charset=UTF-8"
         }
