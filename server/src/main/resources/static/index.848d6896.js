@@ -1,0 +1,2 @@
+var intervalId,timerValue;function startTimer(){intervalId=setInterval((function(){var e=document.getElementById("timer").innerHTML.split(":"),t=parseInt(e[0]),n=parseInt(e[1]);n>=59?(t++,n=0):n++,t<10&&(t="0"+t),n<10&&(n="0"+n),timerValue=t+":"+n,document.getElementById("timer").innerHTML=t+":"+n}),1e3)}function stopTimer(){clearInterval(intervalId)}function resetTimer(){stopTimer(),document.getElementById("timer").innerHTML="00:00"}function getTimerValue(){return timerValue}
+//# sourceMappingURL=index.848d6896.js.map

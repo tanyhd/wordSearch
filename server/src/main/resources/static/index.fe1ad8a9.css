@@ -39,4 +39,12 @@
   margin: auto 30px 30px;
 }
 
+#timer {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  display: flex;
+}
+
 /*# sourceMappingURL=index.fe1ad8a9.css.map */

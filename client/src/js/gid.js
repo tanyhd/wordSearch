@@ -93,6 +93,9 @@ export class Grid {
             if (this.wordsInPuzzle.length === 0) {
                 words.displayWord(this.wordsInPuzzle);
                 words.displayWord(["Congratulation!!!"])
+                stopTimer();
+                const timerValue = getTimerValue();
+                console.log(timerValue);
             } else {
                 words.displayWord(this.wordsInPuzzle);
             }

@@ -568,22 +568,26 @@ submitWordBtn.addEventListener("click", async ()=>{
     const wordList = commaSeperatedWords.split(",");
     const gridSize = document.querySelector("#grid-size").value;
     let result = await fetchGridInfo(gridSize, wordList);
+    resetTimer();
     let wordInPuzzle = result.wordInPuzzle;
     let contentsArray = result.contents.map((content)=>content.split(""));
     grid.words = wordInPuzzle;
     grid.renderGrid(gridSize, contentsArray, wordInPuzzle);
+    startTimer();
 });
 submitWordBtnRandom.addEventListener("click", async ()=>{
     const grid = new (0, _gid.Grid)();
     let result = await fetchGridInfoRandom();
+    resetTimer();
     let wordInPuzzle = result.wordInPuzzle;
     let gridSize = result.gridSize;
     let contentsArray = result.contents.map((content)=>content.split(""));
     grid.words = wordInPuzzle;
     grid.renderGrid(gridSize, contentsArray, wordInPuzzle);
+    startTimer();
 });
 async function fetchGridInfo(gridSize, words) {
-    let response = await fetch("./wordgrid", {
+    let response = await fetch("http://localhost:8080/wordgrid", {
         method: "POST",
         body: JSON.stringify({
             size: gridSize,
@@ -597,7 +601,7 @@ async function fetchGridInfo(gridSize, words) {
     return result;
 }
 async function fetchGridInfoRandom() {
-    let response = await fetch("./wordgrid", {
+    let response = await fetch("http://localhost:8080/wordgrid/randomWordGrid", {
         method: "GET",
         headers: {
             "Content-type": "application/json; charset=UTF-8"
@@ -691,6 +695,9 @@ class Grid {
                 words.displayWord([
                     "Congratulation!!!"
                 ]);
+                stopTimer();
+                const timerValue = getTimerValue();
+                console.log(timerValue);
             } else words.displayWord(this.wordsInPuzzle);
         });
         tbl.addEventListener("mousemove", (event)=>{
