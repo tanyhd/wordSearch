@@ -24,10 +24,22 @@ export class Grid {
             for (let i = firstLetter.y; i <= currentLetter.y; i++) {
                 cellsInRange.push(this.gridArea.querySelector(`td[data-x="${currentLetter.x}"][data-y="${i}"]`));
             }
-        } else if (currentLetter.y - firstLetter.y === currentLetter.x - firstLetter.x) {
-            let delta = currentLetter.y - firstLetter.y;
-            for (let i = 0; i <= delta ; i++) {
-                cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x + i}"][data-y="${firstLetter.y + i}"]`));
+        } else if (Math.abs(currentLetter.y - firstLetter.y) === Math.abs(currentLetter.x - firstLetter.x)) {
+            let delta = Math.abs(currentLetter.y - firstLetter.y);
+            if ((currentLetter.y - firstLetter.y) === (currentLetter.x - firstLetter.x)) {
+                for (let i = 0; i <= delta ; i++) {
+                    cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x + i}"][data-y="${firstLetter.y + i}"]`));
+                }
+            } else if ((currentLetter.y - firstLetter.y) >= (currentLetter.x - firstLetter.x)) {
+                delta = currentLetter.y - firstLetter.y;
+                for (let i = 0; i <= delta ; i++) {
+                    cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x - i}"][data-y="${firstLetter.y + i}"]`));
+                }
+            } else if ((currentLetter.y - firstLetter.y) <= (currentLetter.x - firstLetter.x)) {
+                delta = currentLetter.x - firstLetter.x;
+                for (let i = 0; i <= delta ; i++) {
+                    cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x + i}"][data-y="${firstLetter.y - i}"]`));
+                }
             }
         }
         return cellsInRange;
