@@ -34,6 +34,8 @@ public class RandomWordService {
                 CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY)),
                 CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY)),
                 CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY)),
+                CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY)),
+                CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY)),
                 CompletableFuture.supplyAsync(() -> ninjasApi.getRandomWord(NINJAS_API_KEY))
         ).thenApply(response -> {
             List<String> randomWordList = new ArrayList<>();
@@ -41,7 +43,7 @@ public class RandomWordService {
                 WordResponse wordInReponse = (WordResponse) word;
                 randomWordList.add(wordInReponse.getWord());
             }
-            int randomNum = ThreadLocalRandom.current().nextInt(8, 20);
+            int randomNum = ThreadLocalRandom.current().nextInt(10, 20);
             return wordGridService.createWordGrid(randomNum, randomWordList);
         });
     }
